@@ -66,6 +66,25 @@ function clearItems() {
   resetUI();
 }
 
+// Filter function to find list items
+function filterItems(e) {
+  const text = e.target.value.toLowerCase();
+  const items = itemList.querySelectorAll('li');
+
+  items.forEach((item) => {
+    //firstChild = textNode; textContent gives text w/o ""; toLowerCase() just makes the comparison lowercase
+    const itemName = item.firstChild.textContent.toLowerCase();
+
+    if (itemName.indexOf(text) != -1) { 
+      item.style.display = 'flex';
+    } else {
+      item.style.display = 'none';
+    }
+  })
+
+  console.log(text);
+}
+
 // This function must be called everwhere a list item can be deleted or created.
 // hides the "Clear All" button UI and the "Filter Items" input UI if there are no list items, returns them when new list items are created.
 function resetUI() { 
@@ -80,9 +99,14 @@ function resetUI() {
   }
 }
 
+
+
+
+
 // Event Listeners
 itemForm.addEventListener('submit', addItem);
 itemList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems);
+itemFilter.addEventListener('input', filterItems);
 
 resetUI(); // global call
