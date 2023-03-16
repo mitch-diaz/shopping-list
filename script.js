@@ -6,8 +6,8 @@ const clearBtn = document.getElementById('clear');
 const itemFilter = document.getElementById('filter');
 
 // Add New List Item function
-function addItem(e) {
-  e.preventDefault(); // prevent the form from submmiting
+function onAddItemSubmit(e) {
+  e.preventDefault(); // prevent form default action
 
   const newItem = itemInput.value; 
   // Validate input
@@ -16,9 +16,21 @@ function addItem(e) {
     return; // we use a return to make sure nothing else happens
   }
 
+  // Create item DOM element
+  addItemToDOM(newItem);
+
+  // Add item to local storage
+  addItemToStorage(newItem);
+  
+  resetUI(); // called here because if there was previously an empty list, the call brings back the hidden items
+  itemInput.value = ''; // clears the text input after "Add Item" button is clicked
+}
+
+
+function addItemToDOM(item) {
   // Create list item & append to child
   const li = document.createElement('li');
-  li.appendChild(document.createTextNode(newItem));
+  li.appendChild(document.createTextNode(item));
 
   // Call button function & append to child
   const button = createButton('remove-item btn-link text-red') // classes passed as argument
@@ -26,9 +38,24 @@ function addItem(e) {
 
   // Add li to the DOM
   itemList.appendChild(li);
-  resetUI(); // called here because if there was previously an empty list, the call brings back the hidden items
-  itemInput.value = ''; // clears the text input after "Add Item" button is clicked
 }
+
+function addItemToStorage(item) {
+  let itemsFromStorage;
+
+  if (localStorage.getItem('items') === null) { // is anything in there?
+    itemsFromStorage = []; // if not, set to empty array
+  } else {
+    itemsFromStorage - JSON.parse(localStorage.getItem('items')); // if not empty then add to array
+  }
+
+  //add new item to array
+  itemsFromStorage.push(item); 
+
+  // Convert to JSON string & set to localStorage
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+}
+
 
 // Create new button
 function createButton(classes) {
@@ -104,9 +131,12 @@ function resetUI() {
 
 
 // Event Listeners
-itemForm.addEventListener('submit', addItem);
+itemForm.addEventListener('submit', onAddItemSubmit);
 itemList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems);
 itemFilter.addEventListener('input', filterItems);
 
 resetUI(); // global call
+
+// localStorage.getItem()/setItem()/removeItem()/clear()
+// can only store strings - JSON.stringify(), JSON.parse()
