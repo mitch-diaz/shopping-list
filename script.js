@@ -1,9 +1,18 @@
+// 👉 Issues to fix at bottom
+
 // Globally scoped variables
 const itemForm = document.getElementById('item-form');
 const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const clearBtn = document.getElementById('clear');
 const itemFilter = document.getElementById('filter');
+
+function displayItems() {
+  const itemsFromStorage = getItemsFromStorage();
+  itemsFromStorage.forEach((item) => addItemToDOM(item));
+  // resetUI(); // ???
+}
+
 
 // Add New List Item function
 function onAddItemSubmit(e) {
@@ -42,22 +51,6 @@ function addItemToDOM(item) {
   resetUI();
 }
 
-function addItemToStorage(item) {
-  let itemsFromStorage;
-
-  if (localStorage.getItem('items') === null) { // is anything in there?
-    itemsFromStorage = []; // if not, set to empty array
-  } else {
-    itemsFromStorage = JSON.parse(localStorage.getItem('items')); // if not empty then add to array
-  }
-
-  //add new item to array
-  itemsFromStorage.push(item); 
-
-  // Convert to JSON string & set to localStorage
-  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
-}
-
 
 // Create new button
 function createButton(classes) {
@@ -74,6 +67,32 @@ function createIcon(classes) {
   icon.className = classes;
   return icon;
 }
+
+// Locale Storage
+function addItemToStorage(item) {
+  const itemsFromStorage = getItemsFromStorage();
+
+  //add new item to array
+  itemsFromStorage.push(item); 
+
+  // Convert to JSON string & set to localStorage
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+}
+
+
+// Get Locale Storage
+function getItemsFromStorage() {
+  let itemsFromStorage;
+
+  if (localStorage.getItem('items') === null) { // is anything in there?
+    itemsFromStorage = []; // if not, set to empty array
+  } else {
+    itemsFromStorage = JSON.parse(localStorage.getItem('items')); // if not empty then add to array
+  }
+
+  return itemsFromStorage;
+}
+
 
 // Remove a single list item
 function removeItem(e) {
@@ -129,16 +148,22 @@ function resetUI() {
 }
 
 
+// Initialize app
+function init() {
+  itemForm.addEventListener('submit', onAddItemSubmit);
+  itemList.addEventListener('click', removeItem);
+  clearBtn.addEventListener('click', clearItems);
+  itemFilter.addEventListener('input', filterItems);
+  document.addEventListener('DOMContentLoaded', displayItems);
+
+  resetUI();
+}
+
+init();
 
 
-
-// Event Listeners
-itemForm.addEventListener('submit', onAddItemSubmit);
-itemList.addEventListener('click', removeItem);
-clearBtn.addEventListener('click', clearItems);
-itemFilter.addEventListener('input', filterItems);
-
-resetUI(); // global call
-
-// localStorage.getItem()/setItem()/removeItem()/clear()
-// can only store strings - JSON.stringify(), JSON.parse()
+/* ==============
+Issues to fix...
+1) onAddItemSubmit() alert 'Please add an item' no longer appears and now empty list items are added to the local storage
+2) 
+================*/
