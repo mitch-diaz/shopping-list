@@ -94,15 +94,37 @@ function getItemsFromStorage() {
 }
 
 
-// Remove a single list item
-function removeItem(e) {
-  if (e.target.parentElement.classList.contains('remove-item')) { // if parent of clicked on elem contains the class
-    if (confirm('Are you sure you want to delete this item?')) {
-      e.target.parentElement.parentElement.remove(); // e.click-on.button-Elem.li-Elem.remove()
-      resetUI();
-    }
+function onClickItem(e) {
+  if (e.target.parentElement.classList.contains('remove-item')) {
+    removeItem(e.target.parentElement.parentElement);
   }
 }
+
+
+// Remove a single list item
+function removeItem(item) {
+  if (confirm('Are you sure you want to delete list item?')) {
+    // Remove item from DOM
+    item.remove();
+
+    // Remove item from storage
+    removeItemFromStorage(item.textContent);
+
+    resetUI();
+  }
+}
+
+
+function removeItemFromStorage(item) {
+  let itemsFromStorage = getItemsFromStorage();
+
+  // Filter out item to be removed
+  itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
+
+  // Reset to localStorage
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+}
+
 
 // Remove all items
 function clearItems() {
@@ -111,6 +133,10 @@ function clearItems() {
       itemList.removeChild(itemList.firstChild); 
     } // The while loop is saying, remove the firstChild so long as there is a firstChild to remove.
   }
+  
+  // Clear from localStorage
+  localStorage.removeItem('items');
+  
   resetUI();
 }
 
@@ -151,7 +177,7 @@ function resetUI() {
 // Initialize app
 function init() {
   itemForm.addEventListener('submit', onAddItemSubmit);
-  itemList.addEventListener('click', removeItem);
+  itemList.addEventListener('click', onClickItem);
   clearBtn.addEventListener('click', clearItems);
   itemFilter.addEventListener('input', filterItems);
   document.addEventListener('DOMContentLoaded', displayItems);
