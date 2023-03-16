@@ -22,7 +22,7 @@ function onAddItemSubmit(e) {
   // Add item to local storage
   addItemToStorage(newItem);
   
-  resetUI(); // called here because if there was previously an empty list, the call brings back the hidden items
+  resetUI();
   itemInput.value = ''; // clears the text input after "Add Item" button is clicked
 }
 
@@ -38,6 +38,8 @@ function addItemToDOM(item) {
 
   // Add li to the DOM
   itemList.appendChild(li);
+  itemInput.value = '';
+  resetUI();
 }
 
 function addItemToStorage(item) {
@@ -46,7 +48,7 @@ function addItemToStorage(item) {
   if (localStorage.getItem('items') === null) { // is anything in there?
     itemsFromStorage = []; // if not, set to empty array
   } else {
-    itemsFromStorage - JSON.parse(localStorage.getItem('items')); // if not empty then add to array
+    itemsFromStorage = JSON.parse(localStorage.getItem('items')); // if not empty then add to array
   }
 
   //add new item to array
