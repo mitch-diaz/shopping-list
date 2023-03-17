@@ -9,6 +9,8 @@ const itemFilter = document.getElementById('filter');
 const formBtn = itemForm.querySelector('button');
 let isEditMode = false;
 
+
+// DISPLAY ITEMS FROM LOCAL STORAGE
 function displayItems() {
   const itemsFromStorage = getItemsFromStorage();
   itemsFromStorage.forEach((item) => addItemToDOM(item));
@@ -16,7 +18,7 @@ function displayItems() {
 }
 
 
-// Add New List Item function
+// ADD NEW LIST ITEM
 function onAddItemSubmit(e) {
   e.preventDefault(); // prevent form default action
 
@@ -27,6 +29,16 @@ function onAddItemSubmit(e) {
     return; // we use a return to make sure nothing else happens
   }
 
+  // Check for edit mode
+  if (isEditMode) {
+    const itemToEdit = itemList.querySelector('.edit-mode');
+
+    removeItemFromStorage(itemToEdit.textContent);
+    itemToEdit.classList.remove('edit-mode');
+    itemToEdit.remove();
+    isEditMode = false;
+  }
+
   // Create item DOM element
   addItemToDOM(newItem);
 
@@ -34,10 +46,12 @@ function onAddItemSubmit(e) {
   addItemToStorage(newItem);
   
   resetUI();
+
   itemInput.value = ''; // clears the text input after "Add Item" button is clicked
 }
 
 
+// ADD NEW LIST ITEM TO DOM
 function addItemToDOM(item) {
   // Create list item & append to child
   const li = document.createElement('li');
@@ -157,7 +171,7 @@ function clearItems() {
   localStorage.removeItem('items');
   
   resetUI();
-}
+};
 
 // Filter function to find list items
 function filterItems(e) {
@@ -174,13 +188,12 @@ function filterItems(e) {
       item.style.display = 'none';
     }
   })
-
-  console.log(text);
-}
+};
 
 // This function must be called everwhere a list item can be deleted or created.
 // hides the "Clear All" button UI and the "Filter Items" input UI if there are no list items, returns them when new list items are created.
 function resetUI() { 
+  itemInput.value = '';
   const items = itemList.querySelectorAll('li');
 
   if (items.length === 0) { // array-like
@@ -190,7 +203,12 @@ function resetUI() {
     clearBtn.style.display = 'block';
     itemFilter.style.display = 'block';
   }
-}
+
+  formBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Item';
+  formBtn.style.backgroundColor = '#333';
+
+  isEditMode = false;
+};
 
 
 // Initialize app
