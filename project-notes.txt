@@ -1,0 +1,39 @@
+ISSUES TO FIX:
+
+1✅) onAddItemSubmit() [line 19]
+    How its supposed to work: If form is submitted with no text an alert MSG appears and then after clicking "Ok" should return to text field. Nothing is added to DOM or to localStorage.
+    
+    What's actually happenning: alert MSG appears then after "Ok", an empty list item is added to the DOM (though not added to localStorage).
+
+    SOLVED! Validation within onAddItemSubmit() in unnecessary. Validation with alert placed within addItemToDOM() after creation of li element and textNode. Validation at top of addItemToStorage() prevents localStorage - no alert is needed here. Also added validation with alert When updating a list item, if user fails to type any text, alert will appear and isEditMode will remain on until text is entered.
+
+2) checkIfItemExists() [line 127] 
+    Function does not consider case. Compares exact match only.
+    IDEAS: RegEx should fix this.
+
+
+3)
+
+============================================
+TO DO LIST:
+-----------
+
+1) [LINE 91] for item editing, add pen icon to left of delete icon, refactor code for "Create new button" and "Create new x icon"
+innerHTML = '<i class="fa-solid fa-pen"></i>';
+
+2) Give color to the "Clear All" button
+
+3) Ability to re-oder the list items and have it persist in localStorage
+
+============================================
+Culled code
+-----------
+
+LIST ITEM TEMPLATE
+<li>
+  Apples
+  <button class="remove-item btn-link text-red">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</li>
+
