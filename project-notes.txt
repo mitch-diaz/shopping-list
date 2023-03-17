@@ -12,18 +12,12 @@ ISSUES TO FIX:
     IDEAS: RegEx should fix this.
 
 
-3)
-
 ============================================
 TO DO LIST:
 -----------
 
-1) [LINE 91] for item editing, add pen icon to left of delete icon, refactor code for "Create new button" and "Create new x icon"
-innerHTML = '<i class="fa-solid fa-pen"></i>';
+1) Add a pen icon to left of delete icon (refactor functions)
 
-2) Give color to the "Clear All" button
-
-3) Ability to re-oder the list items and have it persist in localStorage
 
 ============================================
 Culled code
