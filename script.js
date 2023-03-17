@@ -1,12 +1,10 @@
-// 👉 Issues to fix at bottom
-
-// Globally scoped variables
 const itemForm = document.getElementById('item-form');
 const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const clearBtn = document.getElementById('clear');
 const itemFilter = document.getElementById('filter');
 const formBtn = itemForm.querySelector('button');
+const liText = document.querySelector('li');
 let isEditMode = false;
 
 
@@ -14,7 +12,6 @@ let isEditMode = false;
 function displayItems() {
   const itemsFromStorage = getItemsFromStorage();
   itemsFromStorage.forEach((item) => addItemToDOM(item));
-  // resetUI(); // ???
 }
 
 
@@ -23,14 +20,11 @@ function onAddItemSubmit(e) {
   e.preventDefault(); // prevent form default action
 
   const newItem = itemInput.value; 
-  // Validate input
-  if (newItem.value === '') {
-    alert('Please add an item.');
-    return; // we use a return to make sure nothing else happens
-  }
-
-  // Check for edit mode
-  if (isEditMode) {
+  
+  if (newItem === '') {
+    alert('You forgot to type your list item.');
+    return; // empty return interupts the function
+  } if (isEditMode) {
     const itemToEdit = itemList.querySelector('.edit-mode');
     removeItemFromStorage(itemToEdit.textContent);
     itemToEdit.classList.remove('edit-mode');
@@ -57,9 +51,16 @@ function onAddItemSubmit(e) {
 
 // ADD NEW LIST ITEM TO DOM
 function addItemToDOM(item) {
+
   // Create list item & append to child
   const li = document.createElement('li');
   li.appendChild(document.createTextNode(item));
+
+  // Validate input
+  if (item === '') {
+    alert('You forgot to type your list item.');
+    return;
+  }
 
   // Call button function & append to child
   const button = createButton('remove-item btn-link text-red') // classes passed as argument
@@ -67,12 +68,13 @@ function addItemToDOM(item) {
 
   // Add li to the DOM
   itemList.appendChild(li);
+  
   itemInput.value = '';
   resetUI();
 }
 
 
-// Create new button
+// CREATE NEW BUTTON
 function createButton(classes) {
   const button = document.createElement('button');
   button.className = classes; // assign the button elem classes = to the param of classes passed to createButton func
@@ -81,15 +83,25 @@ function createButton(classes) {
   return button;
 }
 
-// Create new "x" icon
+// CREATE NEW "X" delete ICON
 function createIcon(classes) {
   const icon = document.createElement('i');
   icon.className = classes;
   return icon;
 }
 
-// Local Storage
+// TO DO - CREATE NEW "PEN" (EDIT) ICON
+
+
+
+
+// ADD TO LOCAL STORAGE
 function addItemToStorage(item) {
+  // Validate input
+  if (item === '') {
+    return;
+  }
+
   const itemsFromStorage = getItemsFromStorage();
 
   //add new item to array
@@ -100,7 +112,7 @@ function addItemToStorage(item) {
 }
 
 
-// Get Local Storage
+// GET LOCAL STORAGE
 function getItemsFromStorage() {
   let itemsFromStorage;
 
@@ -114,6 +126,7 @@ function getItemsFromStorage() {
 }
 
 
+// REMOVE OR EDIT ITEM ON CLICK
 function onClickItem(e) {
   if (e.target.parentElement.classList.contains('remove-item')) {
     removeItem(e.target.parentElement.parentElement);
@@ -164,6 +177,7 @@ function removeItem(item) {
 }
 
 
+// REMOVE FROM LOCAL STORAGE
 function removeItemFromStorage(item) {
   let itemsFromStorage = getItemsFromStorage();
 
@@ -175,7 +189,7 @@ function removeItemFromStorage(item) {
 }
 
 
-// Remove all items
+// REMOVE ALL ITEMS FROM LOCAL STORAGE
 function clearItems() {
   if (confirm('Are you sure you want to delete all items?')) {
     while (itemList.firstChild) { 
@@ -189,7 +203,8 @@ function clearItems() {
   resetUI();
 };
 
-// Filter function to find list items
+
+// FILTER ITEMS TO FIND LIST ITEM
 function filterItems(e) {
   const text = e.target.value.toLowerCase();
   const items = itemList.querySelectorAll('li');
@@ -206,7 +221,7 @@ function filterItems(e) {
   })
 };
 
-// This function must be called everwhere a list item can be deleted or created.
+// RESET THE UI - This function must be called everwhere a list item can be deleted or created.
 // hides the "Clear All" button UI and the "Filter Items" input UI if there are no list items, returns them when new list items are created.
 function resetUI() { 
   itemInput.value = '';
@@ -227,7 +242,7 @@ function resetUI() {
 };
 
 
-// Initialize app
+// INITIALIZE APP
 function init() {
   itemForm.addEventListener('submit', onAddItemSubmit);
   itemList.addEventListener('click', onClickItem);
@@ -239,10 +254,3 @@ function init() {
 }
 
 init();
-
-
-/* ==============
-Issues to fix...
-1) onAddItemSubmit() alert 'Please add an item' no longer appears and now empty list items are added to the local storage
-2) checkIfItemExists() [line 127] does not consider case. RegEx should fix this.
-================*/
