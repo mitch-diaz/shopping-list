@@ -32,11 +32,15 @@ function onAddItemSubmit(e) {
   // Check for edit mode
   if (isEditMode) {
     const itemToEdit = itemList.querySelector('.edit-mode');
-
     removeItemFromStorage(itemToEdit.textContent);
     itemToEdit.classList.remove('edit-mode');
     itemToEdit.remove();
     isEditMode = false;
+  } else {
+    if (checkIfItemExists(newItem)) {
+      alert('This item already exists.');
+      return;
+    }
   }
 
   // Create item DOM element
@@ -84,7 +88,7 @@ function createIcon(classes) {
   return icon;
 }
 
-// Locale Storage
+// Local Storage
 function addItemToStorage(item) {
   const itemsFromStorage = getItemsFromStorage();
 
@@ -96,7 +100,7 @@ function addItemToStorage(item) {
 }
 
 
-// Get Locale Storage
+// Get Local Storage
 function getItemsFromStorage() {
   let itemsFromStorage;
 
@@ -115,6 +119,18 @@ function onClickItem(e) {
     removeItem(e.target.parentElement.parentElement);
   } else if (e.target.tagName === "LI") {
     setItemToEdit(e.target)
+  }
+}
+
+
+// PREVENT DUPLICATE LIST ITEMS
+function checkIfItemExists(item) {
+  const itemsFromStorage = getItemsFromStorage();
+
+  if (itemsFromStorage.includes(item)) {
+    return true;
+  } else {
+    return false;
   }
 }
 
@@ -228,5 +244,5 @@ init();
 /* ==============
 Issues to fix...
 1) onAddItemSubmit() alert 'Please add an item' no longer appears and now empty list items are added to the local storage
-2) 
+2) checkIfItemExists() [line 127] does not consider case. RegEx should fix this.
 ================*/
